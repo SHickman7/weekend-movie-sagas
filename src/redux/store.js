@@ -7,7 +7,7 @@ import axios from 'axios';
 // Create the rootSaga generator function
 function* rootSaga() {
   yield takeEvery('FETCH_MOVIES', fetchAllMovies);
-  yield takeLatest('SET_SELECTED_MOVIE', getSelectedMovieGenres);
+  yield takeLatest('SET_SELECTED_MOVIE', fetchSelectedMovieGenres);
 }
 
 function* fetchAllMovies() {
@@ -24,19 +24,16 @@ function* fetchAllMovies() {
   }
 }
 
-function* getSelectedMovieGenres(action){
+
+function* fetchSelectedMovieGenres(action){
   try {
-    const movieResponse =
-      yield axios({
-        method:  "GET",
-        url:  `/api/genres/${action.payload.id}`,
-      });
+    const movieResponse = yield axios.get (`/api/genres/${action.payload.id}`);
       yield put({
         type: "SET_SELECTED_MOVIE_GENRES",
         payload: movieResponse.data
       });
     } catch (error) {
-      console.log("Error gettign movie genres: ", error);
+      console.log("Error getting movie genres: ", error);
     }
 };
 
@@ -51,6 +48,7 @@ const selectedMovie = (state = {}, action) => {
   }
   return state;
 };
+
 
 //Set Selected Movie Genres
 const selectedMovieGenres = (state = [], action) => {
@@ -70,7 +68,7 @@ const movies = (state = [], action) => {
     default:
       return state;
   }
-}
+};
 
 // Used to store the movie genres
 const genres = (state = [], action) => {
@@ -80,7 +78,7 @@ const genres = (state = [], action) => {
     default:
       return state;
   }
-}
+};
 
 // Create one store that all components can use
 const storeInstance = createStore(
@@ -90,6 +88,7 @@ const storeInstance = createStore(
     selectedMovie,
     selectedMovieGenres,
   }),
+
   // Add sagaMiddleware to our store
   applyMiddleware(sagaMiddleware, logger),
 );

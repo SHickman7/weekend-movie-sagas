@@ -6,6 +6,7 @@ function MovieDetails () {
     const selectedMovie = useSelector(store => store.selectedMovie);
     const selectedMovieGenres = useSelector(store => store.selectedMovieGenres);
     const dispatch = useDispatch ();
+    const history = useHistory();
     console.log('selectedMovieGenres:',selectedMovieGenres);
 
     //function to return back to the home screen after clicking on the detailed info
