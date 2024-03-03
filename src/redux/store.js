@@ -29,7 +29,7 @@ function* getSelectedMovieGenres(action){
     const movieResponse =
       yield axios({
         method:  "GET",
-        url:  `/api/gendres/${action.payload.id}`,
+        url:  `/api/genres/${action.payload.id}`,
       });
       yield put({
         type: "SET_SELECTED_MOVIE_GENRES",
