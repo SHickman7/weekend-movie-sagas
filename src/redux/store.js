@@ -1,12 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
 
 // Create the rootSaga generator function
 function* rootSaga() {
   yield takeEvery('FETCH_MOVIES', fetchAllMovies);
+  yield takeLatest('SET_SELECTED_MOVIE', getSelectedMovieGenres);
 }
 
 function* fetchAllMovies() {
@@ -23,7 +24,24 @@ function* fetchAllMovies() {
   }
 }
 
+function* getSelectedMovieGenres(action){
+  try {
+    const movieResponse =
+      yield axios({
+        method:  "GET",
+        url:  `/api/gendres/${action.payload.id}`,
+      });
+      yield put({
+        type: "SET_SELECTED_MOVIE_GENRES",
+        payload: movieResponse.data
+      });
+    } catch (error) {
+      console.log("Error gettign movie genres: ", error);
+    }
+};
 
+
+//Set Selected Movie
 const selectedMovie = (state = {}, action) => {
   switch (action.type){
     case "SET_SELECTED_MOVIE":
@@ -32,6 +50,13 @@ const selectedMovie = (state = {}, action) => {
       return {};
   }
   return state;
+};
+
+//Set Selected Movie Genres
+const selectedMovieGenres = (state = [], action) => {
+  if (action.type === "SET_SELECTED_MOVIE_GENRES"){
+    return action.payload;
+  } else return state;
 };
 
 // Create sagaMiddleware
@@ -63,6 +88,7 @@ const storeInstance = createStore(
     movies,
     genres,
     selectedMovie,
+    selectedMovieGenres,
   }),
   // Add sagaMiddleware to our store
   applyMiddleware(sagaMiddleware, logger),
