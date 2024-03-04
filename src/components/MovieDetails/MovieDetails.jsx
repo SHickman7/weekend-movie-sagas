@@ -21,15 +21,19 @@ function MovieDetails () {
     return(
         <>
          <div key={selectedMovie.id} data-testid="movieDetails">
-        <button onClick={goToHomeScreen} data-testid="toList">Return Home</button>
-            <h3>{selectedMovie.title}</h3>
+            <button onClick={goToHomeScreen} data-testid="toList" className="button">Return to Movie Landing Page</button>
+            <h2>{selectedMovie.title}</h2>
+            <img src = {selectedMovie.poster} /> </div>
+        <div className="bottom_half_detailed_page">
+            <h4 className="header_underline">Genre(s):</h4>
             <h4>{selectedMovieGenres.map(genre => {
                 return (
-                    <p key={genre.id}>{genre.name}</p>
+                    <>
+                    <li key={genre.id}>{genre.name}</li>
+                    </>
                 )
             })}</h4>
-            <img src = {selectedMovie.poster} />
-            <p> {selectedMovie.description}</p>
+            <p className="movie_description"> {selectedMovie.description}</p>
          </div>
         </>
     );
